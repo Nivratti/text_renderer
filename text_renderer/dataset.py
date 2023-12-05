@@ -2,7 +2,7 @@ import os
 import json
 from typing import Dict
 
-import lmdb
+# import lmdb # commented on : 28 nov 2023 -- 
 import cv2
 import numpy as np
 
