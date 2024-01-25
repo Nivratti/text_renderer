@@ -87,6 +87,7 @@ def parse_args():
     parser.add_argument("--config", required=True, help="python file path")
     parser.add_argument("--dataset", default="img", choices=["lmdb", "img"])
     parser.add_argument("--num_processes", type=int, default=2)
+    parser.add_argument("--num_image", type=int, default=100)
     parser.add_argument("--log_period", type=float, default=10)
     return parser.parse_args()
 
@@ -96,11 +97,16 @@ if __name__ == "__main__":
     manager = mp.Manager()
     data_queue = manager.Queue()
     args = parse_args()
-
+    print(f"args: {args}")
     dataset_cls = LmdbDataset if args.dataset == "lmdb" else ImgDataset
 
     generator_cfgs = get_cfg(args.config)
+    # print(f"generator_cfgs: {generator_cfgs}")
 
+    if args.num_image:
+        generator_cfgs[0].num_image = args.num_image
+    print(f"generator_cfgs: {generator_cfgs}")
+    
     for generator_cfg in generator_cfgs:
         db_writer_process = DBWriterProcess(
             dataset_cls, data_queue, generator_cfg, args.log_period
